@@ -11,16 +11,15 @@ import { env } from '~/config/environment'
 
 let trelloDatabaseInstance = null
 const mongoClientInstance = new MongoClient(env.MONGODB_URI, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true
-  }
+  // serverApi: {
+  //   version: ServerApiVersion.v1,
+  //   strict: true,
+  //   deprecationErrors: true
+  // }
 })
 
 export const CONNECT_DB = async () => {
   await mongoClientInstance.connect()
-
   trelloDatabaseInstance = mongoClientInstance.db(env.DATABASE_NAME)
 }
 
@@ -28,14 +27,13 @@ export const CONNECT_DB = async () => {
 // để chúng ta sử dụng ở nhiều nơi khác nhau trong code.
 // Lưu ý phải đảm bảo chỉ luôn gọi cái getDB này sau khi đã kết nối thành công tới MongoDB
 export const GET_DB = () => {
-  if (!mongoClientInstance) throw new Error('Must connect to Database first!')
-
+  if (!mongoClientInstance) {
+    throw new Error('Must connect to Database first!')
+  }
   return trelloDatabaseInstance
 }
 
-export const CLOSE_DB = async() => {
+export const CLOSE_DB = async () => {
   await mongoClientInstance.close()
+  trelloDatabaseInstance = null
 }
-
-
-
